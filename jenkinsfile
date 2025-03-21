@@ -46,8 +46,8 @@ pipeline {
 post {
         success {
             // Clean up, e.g., destroy resources (optional)
-          //  sh 'terraform destroy -auto-approve'
-              sh 'echo hello, please clean up resources'
+            sh 'terraform destroy -auto-approve'
+     //  sh 'echo hello, please clean up resources'
         }
     }
 }
