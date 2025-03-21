@@ -1,13 +1,4 @@
-module "resourcegroup" {
-  source  = "./resourcegroup"
-  env     = "dev"
-  location = "east us"
-}
-
-
-//module "virtualmachine" {
- // source  = "virtualmachine"
- // vnet_name     = var.vnet_name
- // location = var.location
- // env =var.env
-//}
+resource "azurerm_resource_group" "example" {
+    name = "demo-rg-dev"
+    location = "east us" 
+   }
