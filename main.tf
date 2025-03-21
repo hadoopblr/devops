@@ -1,7 +1,7 @@
 resource "azurerm_resource_group" "example" {
-    name = "demo-rg-${var.env}"
-    location = var.location 
+    name = "demo-rg"
+    location = 'east us' 
     tags = {
-        environment = var.env
+        environment = 'dev'
     }
 }
