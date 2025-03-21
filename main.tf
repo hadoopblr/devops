@@ -1,4 +1,13 @@
-resource "azurerm_resource_group" "example" {
-    name = "demo-rg"
-    location = "east us"
+module "resourcegroup" {
+  source  = "../devops/resourcegroup"
+  env     = var.env
+  location = var.location
+}
+
+
+module "virtualmachine" {
+  source  = "../devops/virtualmachine"
+  vnet_name     = var.vnet_name
+  location = var.location
+  env =var.env
 }
