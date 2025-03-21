@@ -1,32 +1,32 @@
 
 resource "azurerm_virtual_network" "example" {
-  name                = "demo-${var.env}"
+  name                = var.vnet_name
   location            =  var.location
   resource_group_name = "demo-rg-${var.env}"
   address_space       = ["10.0.0.0/16"]
 }
 
 resource "azurerm_subnet" "example" {
-  name                 = "demo-subnet-${var.env}"
+  name                 = "example-subnet"
   resource_group_name  = "demo-rg-${var.env}"
   virtual_network_name = azurerm_virtual_network.example.name
   address_prefixes     = ["10.0.1.0/24"]
 }
 
 resource "azurerm_network_interface" "example" {
-  name                = "demo-nic-${var.env}"
+  name                = "example-nic"
   location           =  var.location
   resource_group_name = "demo-rg-${var.env}"
 
   ip_configuration {
-    name                          = "demo-ip-config-${var.env}"
+    name                          = "example-ip-config"
     subnet_id                     = azurerm_subnet.example.id
     private_ip_address_allocation = "Dynamic"
   }
 }
 
 resource "azurerm_virtual_machine" "example" {
-  name                = "demo-vm-${var.env}"
+  name                = "example-vm"
   location           =  var.location 
   resource_group_name = "demo-rg-${var.env}"
   network_interface_ids = [
