@@ -1,48 +1,52 @@
 pipeline {
     agent any
-
-     environment {
-        AZURE_CREDENTIAL_ID = 'azuresp' // Replace with your Azure credential ID
-        AZURE_TENANT_ID = 'tenant_id'
-        AZURE_SUBSCRIPTION_ID = 'subscription_id'
-        AZURE_CLIENT_SECRET = 'client_secret'
-
+    environment {
+        MY_CRED = credentials('azuresp')
     }
-
     stages {
-        stage('Authenticate') {
+        stage('Checkout') {
             steps {
-                script {
-                    azureCli('az login --service-principal -u ${env.AZURE_CREDENTIAL_ID} --tenant ${env.AZURE_TENANT_ID} --subscription ${env.AZURE_SUBSCRIPTION_ID} --client-secret ${env.AZURE_CLIENT_SECRET}')
-                }
-            }
-        }
-        stage('Checkout Code') {
-            steps {
-                // Checkout your Terraform code from a Git repository
-                git branch: 'main', url: 'https://github.com/hadoopblr/devops.git'
+                // Checkout your Git repository
+                git url: 'https://github.com/hadoopblr/devops.git'
             }
         }
 
         stage('Terraform Init') {
             steps {
                 // Initialize Terraform
-                sh "terraform init"
-            }
-        }
-
-        stage('Terraform Plan') {
-            steps {
-                // Plan the Terraform changes
-                sh "terraform plan"
+                dir ( '/var/lib/jenkins/workspace/terraform/terraform' ){
+                script { 
+                    sh 'terraform init'
+                    }
+                }
             }
         }
 
         stage('Terraform Apply') {
             steps {
-                // Apply the Terraform changes
-                sh "terraform apply"
+                // Apply Terraform changes
+                dir ('/var/lib/jenkins/workspace/terraform/terraform'){
+                script {
+                    withCredentials([azureServicePrincipal(credentialsId: 'azuresp', variable: 'azuresp')]) {
+                        // Set Azure credentials
+                        // sh 'az login --service-principal -u $MY_CRED_CLIENT_ID -p $MY_CRED_CLIENT_SECRET -t $MY_CRED_TENANT_ID'
+                        sh 'export ARM_CLIENT_ID=$MY_CRED_CLIENT_ID'
+                        sh 'export ARM_CLIENT_SECRET=$MY_CRED_CLIENT_SECRET'
+                        sh 'export ARM_SUBSCRIPTION_ID=$MY_CRED_SUBSCRIPTION_ID'
+                        sh 'export ARM_TENANT_ID=$MY_CRED_TENANT_ID'
+
+                        // Run Terraform apply
+                        sh 'sudo terraform apply -auto-approve'
+                        }
+                    }
+                }
             }
+        }
+    }
+post {
+        success {
+            // Clean up, e.g., destroy resources (optional)
+          //  sh 'terraform destroy -auto-approve'
         }
     }
 }
