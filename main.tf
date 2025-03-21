@@ -1,5 +1,7 @@
-module "resourcegroup" {
-  source  = "../devops/resourcegroup"
-  env     = var.env
-  location = var.location
+resource "azurerm_resource_group" "example" {
+    name = "demo-rg-${var.env}"
+    location = var.location 
+    tags = {
+        environment = var.env
+    }
 }
