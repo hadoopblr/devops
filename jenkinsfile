@@ -7,7 +7,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout your Git repository
-               git branch: 'main', url: 'https://github.com/hadoopblr/devops.git'
+               git branch: 'test', url: 'https://github.com/hadoopblr/devops.git'
             }
         }
 
