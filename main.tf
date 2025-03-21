@@ -1,5 +1,5 @@
 module "resourcegroup" {
-  source  = "../terraform-code/resourcegroup"
+  source  = "../devops/resourcegroup"
   env     = var.env
   location = var.location
 }
