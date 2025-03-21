@@ -1,8 +1,22 @@
 pipeline {
     agent any
 
-    
+     environment {
+        AZURE_CREDENTIAL_ID = 'azuresp' // Replace with your Azure credential ID
+        AZURE_TENANT_ID = 'tenant_id'
+        AZURE_SUBSCRIPTION_ID = 'subscription_id'
+        AZURE_CLIENT_SECRET = 'client_secret'
+
+    }
+
     stages {
+        stage('Authenticate') {
+            steps {
+                script {
+                    azureCli('az login --service-principal -u ${env.AZURE_CREDENTIAL_ID} --tenant ${env.AZURE_TENANT_ID} --subscription ${env.AZURE_SUBSCRIPTION_ID} --client-secret ${env.AZURE_CLIENT_SECRET}')
+                }
+            }
+        }
         stage('Checkout Code') {
             steps {
                 // Checkout your Terraform code from a Git repository
@@ -20,14 +34,14 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 // Plan the Terraform changes
-                sh "terraform plan -var-file=dev.tfvars"
+                sh "terraform plan"
             }
         }
 
         stage('Terraform Apply') {
             steps {
                 // Apply the Terraform changes
-                sh "terraform apply -var-file=dev.tfvars"
+                sh "terraform apply"
             }
         }
     }
