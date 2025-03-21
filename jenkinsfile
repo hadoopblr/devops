@@ -1,30 +1,34 @@
 pipeline {
     agent any
 
-    tools {
-        // Install the Maven version configured as "M3" and add it to the path.
-        maven "M3"
-    }
-
+    
     stages {
-        stage('Build') {
+        stage('Checkout Code') {
             steps {
-                // Get some code from a GitHub repository
-                git 'https://github.com/hadoopblr/devops.git'
-
-                // Run Maven on a Unix agent.
-                sh "mvn -Dmaven.test.failure.ignore=true clean package"
-
-                // To run Maven on a Windows agent, use
-                // bat "mvn -Dmaven.test.failure.ignore=true clean package"
+                // Checkout your Terraform code from a Git repository
+                git branch: 'main', url: 'https://github.com/hadoopblr/devops.git'
             }
         }
-        stage('hello'){
-        steps{
-         script{
-     sh 'echo Hello world!'
-    }
-}
-}
+
+        stage('Terraform Init') {
+            steps {
+                // Initialize Terraform
+                sh "terraform init"
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+                // Plan the Terraform changes
+                sh "terraform plan -var-file=dev.tfvars"
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                // Apply the Terraform changes
+                sh "terraform apply -var-file=dev.tfvars"
+            }
+        }
     }
 }
