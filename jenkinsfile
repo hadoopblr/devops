@@ -14,18 +14,18 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 // Initialize Terraform
-                dir ( '/var/lib/jenkins/workspace/terraform/terraform' ){
+               // dir ( '/var/lib/jenkins/workspace/terraform/terraform' ){
                 script { 
                     sh 'terraform init'
                     }
-                }
+               // }
             }
         }
 
         stage('Terraform Apply') {
             steps {
                 // Apply Terraform changes
-                dir ('/var/lib/jenkins/workspace/terraform/terraform'){
+               // dir ('/var/lib/jenkins/workspace/terraform/terraform'){
                 script {
                     withCredentials([azureServicePrincipal(credentialsId: 'azuresp', variable: 'azuresp')]) {
                         // Set Azure credentials
@@ -39,7 +39,7 @@ pipeline {
                         sh 'sudo terraform apply -auto-approve'
                         }
                     }
-                }
+               // }
             }
         }
     }
