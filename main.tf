@@ -1,7 +1,7 @@
 module "resourcegroup" {
   source  = "./resourcegroup"
-  env     = var.env
-  location = var.location
+  env     = "dev"
+  location = "east us"
 }
 
 
