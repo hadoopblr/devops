@@ -1,3 +1,2 @@
-env = "srini"
-location = "East Asia"
-vnet_name = "example-demo-vnet-srini"
+env = "dev"
+location = "east us"
